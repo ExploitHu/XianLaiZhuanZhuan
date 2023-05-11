@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="biao.community.dao.DGetAnonPersonalInformation">
+    <select id="getAnonPersonalInformation" parameterType="int" resultType="biao.community.information.port1_2.AnonPersonalMessage">
+        SELECT
+            ua_id,
+            ua_name,
+            ua_head,
+            ua_sex,
+            ua_point,
+            ua_xpoint
+        FROM user_anon where ua_id = #{ua_id}
+    </select>
+
+
+
+</mapper>

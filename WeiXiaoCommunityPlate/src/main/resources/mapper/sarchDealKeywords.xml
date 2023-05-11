@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="biao.community.dao.DSarchDealKeywords">
+
+    <select id="searchKeywordsGetSize"  parameterType="biao.community.information.port3_6.JsonValue" resultType="biao.community.information.port3_6.DealInformation">
+        select
+        g_sell.u_id,
+        g_sell.g_id,
+        g_sell.g_price,
+        g_sell.g_shield,
+        g_sell.g_anonymous,
+        g_sell.g_information,
+        g_sell.g_transport,
+        g_sell.g_image,
+        g_sell.g_view,
+        recommendValue,
+        g_time
+        from g_sell
+        WHERE g_shield != true
+        <if test="Key != null">
+            <choose>
+                <when test="Key.length() == 1">
+                    and g_information like "%${Key}%"
+                </when>
+                <when test="Key.length() > 1">
+                    and MATCH (g_class,g_information) AGAINST (#{Key})
+                </when>
+            </choose>
+        </if>
+        <if test="u_city!=null">
+            and (SELECT u_city FROM user WHERE user.u_id =  g_sell.u_id) = #{u_city}
+        </if>
+        <if test="maxPrice != -1">
+            and #{maxPrice} >= g_price
+        </if>
+        <if test="minPrice != -1">
+            and g_price >= #{minPrice}
+        </if>
+        <if test="g_class != null">
+            and g_class = #{g_class}
+        </if>
+        and #{recommendValue} >= recommendValue
+        and if(#{recommendValue} = recommendValue and  g_time >= #{time},false,true)
+        ORDER BY recommendValue  DESC, g_time DESC
+        LIMIT #{size}
+    </select>
+
+<!--
+    <select id="searchKeywordGetSize" parameterType="biao.community.information.port3_6.JsonValue" resultType="biao.community.information.port3_6.DealInformation">
+        select
+            u_id,
+            g_id,
+            g_price,
+            g_shield,
+            g_anonymous,
+            g_information,
+            g_transport,
+            g_image,
+            g_view
+        from g_sell
+        where g_information like #{Key}
+        and g_shield != true
+        ORDER BY recommendValue  DESC, g_time DESC
+        LIMIT #{size}
+    </select>
+-->
+
+    <select id="isGCollect" parameterType="String" resultType="boolean">
+        SELECT IF(
+            (SELECT u_id FROM g_collect WHERE u_id = #{u_id} and g_id = #{g_id} LIMIT 1),
+            false,
+            true
+        )
+        AS boolResult;
+    </select>
+</mapper>

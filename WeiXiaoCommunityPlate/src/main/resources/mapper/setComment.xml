@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="biao.community.dao.DSetComment">
+    <select id="getMinGapvalue" resultType="int">
+        SELECT newBtcId(#{bt_id})
+    </select>
+
+    <insert id="setMainComment" parameterType="biao.community.information.port2_5.Result"  useGeneratedKeys="true"  keyProperty="btc_time" >
+        INSERT INTO bt_comment(
+        bt_id,
+        btc_id,
+        u_id0,
+        u_id,
+        btc_com
+        ) value(
+        #{bt_id},
+        #{btc_id},
+        #{u_id0},
+        null,
+        #{btc_com}
+        )
+    </insert>
+
+
+
+    <insert id="setSonComment" parameterType="biao.community.information.port2_5.Result" useGeneratedKeys="true"  keyProperty="btc_time">
+        INSERT INTO bt_comment(
+        bt_id,
+        btc_id,
+        u_id0,
+        u_id,
+        btc_com
+        ) value(
+        #{bt_id},
+        #{btc_id},
+        #{u_id0},
+        #{u_id},
+        #{btc_com})
+    </insert>
+
+    <select id="selectBtcTime" resultType="String" parameterType="String">
+        select btc_time from bt_comment  where id =#{id}
+    </select>
+
+    <select id="getGMinGapvalue" resultType="int">
+        SELECT newGcId(#{g_id})
+    </select>
+
+    <insert id="setGMainComment" useGeneratedKeys="true"  keyProperty="gc_time"  parameterType="biao.community.information.port3_4.Result">
+        INSERT INTO g_comment(
+            g_id,
+            gc_id,
+            u_id0,
+            u_id,
+            gc_com
+        ) value(
+            #{g_id},
+            #{gc_id},
+            #{u_id0},
+            null,
+            #{gc_com}
+            )
+    </insert>
+
+    <insert id="setGSonComment" useGeneratedKeys="true"  keyProperty="gc_time" parameterType="biao.community.information.port3_4.Result">
+        INSERT INTO g_comment(
+            g_id,
+            gc_id,
+            u_id0,
+            u_id,
+            gc_com
+        ) value(
+            #{g_id},
+            #{gc_id},
+            #{u_id0},
+            #{u_id},
+            #{gc_com})
+    </insert>
+
+    <select id="selectGcTime" parameterType="String" resultType="String">
+        select gc_time from g_comment where id = #{id}
+    </select>
+
+    <update id="bReadAnd1" parameterType="String">
+        update user
+        <if test="u_id == null">
+            ,(SELECT u_id FROM b_topic WHERE bt_id = #{bt_id}) temp
+        </if>
+        set user.bToBeRead = user.bToBeRead +1
+        where
+        <choose>
+            <when test="u_id != null">
+                user.u_id = #{u_id}
+                and #{u_id} != #{u_id0}
+            </when>
+            <otherwise>
+                user.u_id = temp.u_id
+                and #{u_id0} != temp.u_id
+            </otherwise>
+        </choose>
+    </update>
+
+    <update id="gReadAnd1" parameterType="String">
+        update user
+        <if test="u_id == null">
+            ,(SELECT u_id FROM g_sell WHERE g_sell.g_id = #{g_id}) temp
+        </if>
+        set user.gToBeRead =user.gToBeRead + 1
+        where
+        <choose>
+            <when test="u_id != null">
+                user.u_id = #{u_id}
+                and #{u_id} != #{u_id0}
+            </when>
+            <otherwise>
+                user.u_id = temp.u_id
+                and #{u_id0} != temp.u_id
+            </otherwise>
+        </choose>
+    </update>
+
+
+</mapper>

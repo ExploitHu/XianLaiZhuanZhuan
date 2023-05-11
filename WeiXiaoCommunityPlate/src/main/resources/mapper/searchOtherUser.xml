@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="biao.community.dao.DSearchOtherUser">
+
+    <select id="searchOtherUser" parameterType="String" resultType="biao.community.information.port4_3.OUInformation">
+        select u_id,u_head,u_sex,u_nickname,u_identity,u_city,u_like from user where u_id = #{u_id}
+    </select>
+
+    <select id="isFriend" parameterType="biao.community.information.port4_3.JsonValue" resultType="boolean">
+        SELECT IF(
+            (SELECT u_id FROM u_friend WHERE u_id = #{u_id} and  uf_id =#{searchUser} LIMIT 1),
+        true,false
+        )
+        AS boolResult;
+    </select>
+
+
+</mapper>

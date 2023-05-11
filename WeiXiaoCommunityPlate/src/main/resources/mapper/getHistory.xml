@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="biao.community.dao.DGetHistory">
+    <select id="bGetHistory" parameterType="biao.community.information.port2_10and3_9.JsonValue" resultType="biao.community.information.port2_10and3_9.BHistory">
+        SELECT
+               b_history.bt_id,b_history.time,b_topic.bt_image,b_topic.bt_contents
+        FROM b_history,b_topic
+        where b_history.u_id = #{u_id}
+        and b_history.bt_id = b_topic.bt_id
+        and #{time} > b_history.time
+        ORDER BY time DESC
+        LIMIT #{sum}
+    </select>
+
+
+    <select id="gGetHistory" parameterType="biao.community.information.port2_10and3_9.JsonValue" resultType="biao.community.information.port2_10and3_9.GHistory">
+        SELECT g_history.g_id,g_history.time,g_sell.g_image,g_sell.g_information,g_sell.g_price
+        FROM g_history,g_sell
+        where g_history.u_id = #{u_id}
+        and g_history.g_id = g_sell.g_id
+        and #{time} > g_history.time
+        ORDER BY time DESC
+        LIMIT #{sum}
+    </select>
+</mapper>

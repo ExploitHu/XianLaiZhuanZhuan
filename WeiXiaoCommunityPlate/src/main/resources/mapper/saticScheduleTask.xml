@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="biao.community.dao.DSaticScheduleTask">
+
+    <select id="getBInformation" parameterType="int" resultType="biao.community.timedTask.BInformation">
+        select bt_id,bt_click,bt_time,bt_like from b_topic  ORDER BY bt_time DESC,bt_click DESC LIMIT #{sum}
+    </select>
+
+    <update id="setBRecommendedValue" parameterType="list">
+        <foreach item="item"  index="index" open="" close="" collection="list" separator=";">
+         UPDATE b_topic SET recommendValue = #{item.recommendValue}  WHERE bt_id = #{item.bt_id}
+        </foreach>
+    </update>
+
+
+    <select id="getGInformation" parameterType="int" resultType="biao.community.timedTask.GInformation">
+        select g_id,g_view,g_time,g_like from g_sell  ORDER BY g_time DESC,g_view DESC LIMIT #{sum}
+    </select>
+
+    <update id="setGRecommendedValue" parameterType="list">
+        <foreach item="item"  index="index" open="" close="" collection="list" separator=";">
+            UPDATE g_sell SET recommendValue = #{item.recommendValue}  WHERE g_id = #{item.g_id}
+        </foreach>
+    </update>
+</mapper>

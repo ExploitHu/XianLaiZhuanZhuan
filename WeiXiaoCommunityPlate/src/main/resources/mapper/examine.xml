@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="biao.community.dao.Examine">
+    <select id="exUId" parameterType="int" resultType="boolean">
+        SELECT IF(
+            (SELECT u_id FROM user WHERE u_id = #{u_id} LIMIT 1),
+            false,
+            true
+        )
+        AS boolResult;
+    </select>
+
+    <select id="exBsId" parameterType="String" resultType="boolean">
+        SELECT IF(
+            (SELECT bs_id FROM b_classify WHERE name = #{bs_id} LIMIT 1),
+            false,
+            true
+        )
+        AS boolResult;
+    </select>
+
+    <select id="exGClass" parameterType="String" resultType="boolean">
+        SELECT IF(
+            (SELECT g_class FROM g_classify WHERE name = #{name} LIMIT 1),
+            false,
+            true
+        )
+        AS boolResult;
+    </select>
+
+    <select id="exGId" parameterType="int" resultType="boolean">
+        SELECT IF(
+            (SELECT g_id FROM g_sell WHERE g_id = #{g_id} LIMIT 1),
+            false,
+            true
+        )
+        AS boolResult;
+    </select>
+
+    <select id="exBtId" parameterType="int" resultType="boolean">
+        SELECT IF(
+            (SELECT bt_id FROM b_topic WHERE bt_id = #{bt_id} LIMIT 1),
+            false,
+            true
+        )
+        AS boolResult;
+    </select>
+
+    <select id="exCity" parameterType="String" resultType="boolean">
+        SELECT IF(
+            (SELECT c_id FROM campus WHERE c_city = #{city} LIMIT 1),
+            false,
+            true
+        )
+        AS boolResult;
+    </select>
+
+    <select id="UserIssueBPost" parameterType="String" resultType="boolean">
+        SELECT IF(
+            (SELECT bt_id FROM b_topic WHERE bt_id = #{bt_id} and u_id = #{u_id} LIMIT 1),
+            false,
+            true
+        )
+        AS boolResult;
+    </select>
+
+    <select id="UserIssueGPost" parameterType="String" resultType="boolean">
+        SELECT IF(
+            (SELECT g_id FROM g_sell WHERE g_id = #{g_id} and u_id = #{u_id} LIMIT 1),
+            false,
+            true
+        )
+        AS boolResult;
+    </select>
+
+    <select id="test" parameterType="String" resultType="biao.community.TestStruct">
+        SELECT
+            g_comment.g_id,g_comment.u_id0,g_comment.u_id,g_comment.gc_com,user.u_nickname,user.u_head,g_sell.g_image,g_sell.g_information
+        FROM g_comment ,user,g_sell
+        WHERE
+                g_comment.u_id = 10000000
+                and g_comment.read = 0
+                and g_sell.g_id = g_comment.g_id
+                and user.u_id = g_comment.u_id0
+           or (g_comment.u_id IS NULL and g_comment.read = 0 and (SELECT u_id FROM g_sell WHERE g_sell.g_id = g_comment.g_id )= 10000000)
+    </select>
+</mapper>

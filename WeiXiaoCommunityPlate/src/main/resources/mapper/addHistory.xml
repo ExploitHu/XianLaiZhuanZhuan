@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="biao.community.dao.DAddHistory">
+    <select id="bAddHistory" parameterType="biao.community.information.port2_9and3_8.JsonValue">
+        INSERT INTO b_history (u_id,bt_id) VALUES(#{u_id},#{bg_id})
+    </select>
+
+    <select id="bDeleteHistory" parameterType="biao.community.information.port2_9and3_8.JsonValue">
+        delete from b_history where u_id=#{u_id} and bt_id=#{bg_id}
+    </select>
+
+    <select id="bDeleteBeyond" parameterType="int"  resultType="int">
+        select bDeleteHistory(#{n},#{u_id})
+    </select>
+
+    <select id="gAddHistory" parameterType="biao.community.information.port2_9and3_8.JsonValue">
+        INSERT INTO g_history (u_id,g_id) VALUES(#{u_id},#{bg_id})
+    </select>
+
+    <select id="gDeleteHistory" parameterType="biao.community.information.port2_9and3_8.JsonValue">
+        delete from g_history where u_id=#{u_id} and g_id=#{bg_id}
+    </select>
+
+    <select id="gDeleteBeyond" parameterType="int" resultType="int">
+        select gDeleteHistory(#{n},#{u_id})
+    </select>
+
+    <update id="addBView" parameterType="String">
+        UPDATE b_topic set bt_click = (b_topic.bt_click + 1) where bt_id = #{bt_id}
+    </update>
+
+    <update id="addGView" parameterType="String">
+        UPDATE g_sell set g_view = (g_sell.g_view + 1) where g_id = #{g_id}
+    </update>
+
+</mapper>

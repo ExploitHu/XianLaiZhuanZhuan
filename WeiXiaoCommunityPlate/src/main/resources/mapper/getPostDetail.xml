@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="biao.community.dao.DGetPostDetail">
+
+
+    <resultMap id="CommunityPostInformation" type="biao.community.information.port2_1and3_1.CommunityPostInformation">
+        <id column="bt_id" property="bt_id"/>
+        <result column="bt_time" property="bt_time_Temp"/>
+    </resultMap>
+
+    <select id="getBPostetail" parameterType="String" resultMap="CommunityPostInformation">
+        SELECT bt_id,
+               u_id,
+               bt_like,
+               bt_reply,
+               bs_id,
+               bt_contents,
+               bt_time,
+               bt_image,
+               b_anonymous,
+               recommendValue
+        FROM b_topic
+        WHERE  b_shield != true
+        and  bt_id = #{bt_id}
+    </select>
+
+    <select id="getGPostetail" parameterType="String" resultType="biao.community.information.port3_2.GDInformation">
+        SELECT g_id, g_price, g_shield, u_id, g_information, g_transport,g_image, g_class, g_view,g_time,g_like,g_anonymous
+        FROM g_sell
+        WHERE g_id = #{g_id}
+    </select>
+
+    <select id="isLike" parameterType="String" resultType="boolean">
+        SELECT IF(
+            (SELECT u_id FROM g_like WHERE u_id = #{u_id} and g_id = #{g_id} LIMIT 1),
+            true,
+            false
+        )
+        AS boolResult;
+    </select>
+
+    <select id="isGCollect" parameterType="String" resultType="boolean">
+        SELECT IF(
+            (SELECT u_id FROM g_collect WHERE u_id = #{u_id} and g_id=#{g_id} LIMIT 1),
+            false,
+            true
+        )
+        AS boolResult;
+    </select>
+
+
+
+
+
+</mapper>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="biao.community.dao.DDeletePost">
+    <delete id="bDeleteCollect" parameterType="String">
+        delete from  b_collect where bt_id = #{bt_id}
+    </delete>
+
+    <delete id="bDeleteHistory" parameterType="String">
+        delete from b_history  where bt_id = #{bt_id}
+    </delete>
+
+    <delete id="bDeleteComment" parameterType="String">
+        delete from  bt_comment where bt_id = #{bt_id}
+    </delete>
+
+    <delete id="bDeleteLike" parameterType="String">
+        delete from  b_like  where bt_id = #{bt_id}
+    </delete>
+
+    <delete id="bDeletePost" parameterType="String">
+        delete from  b_topic  where bt_id = #{bt_id}
+    </delete>
+
+
+
+
+    <delete id="gDeleteCollect" parameterType="String">
+        delete from  g_collect where g_id = #{g_id}
+    </delete>
+
+    <delete id="gDeleteHistory" parameterType="String">
+        delete from g_history  where g_id = #{g_id}
+    </delete>
+
+    <delete id="gDeleteComment" parameterType="String">
+        delete from  g_comment where g_id = #{g_id}
+    </delete>
+
+    <delete id="gDeleteLike" parameterType="String">
+        delete from  g_like  where g_id = #{g_id}
+    </delete>
+
+    <delete id="gDeletePost" parameterType="String">
+        delete from  g_sell  where g_id = #{g_id}
+    </delete>
+
+</mapper>

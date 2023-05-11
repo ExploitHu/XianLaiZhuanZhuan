@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="biao.community.dao.DGetPost">
+
+
+    <resultMap id="CommunityPostInformation" type="biao.community.information.port2_1and3_1.CommunityPostInformation">
+        <id column="bt_id" property="bt_id"/>
+        <result column="bt_time" property="bt_time_Temp"/>
+    </resultMap>
+<!--
+    <select id="getPlateCommunityDynamic"  resultMap="CommunityPostInformation" parameterType="biao.community.information.port2_1and3_1.JsonValue">
+        SELECT bt_id,
+        bt_time,
+        u_id,
+        bt_like,
+        bt_reply,
+        bs_id,
+        bt_contents,
+        bt_image,
+        b_anonymous,
+        recommendValue
+        FROM b_topic
+        WHERE bs_id = #{bs_id} and b_shield != true
+        and  #{recommendValue} >= recommendValue
+        and if(#{recommendValue} = recommendValue and  bt_time >= #{time},false,true)
+        ORDER BY recommendValue  DESC, bt_time DESC,bt_like DESC
+        LIMIT #{sum};
+    </select>
+
+    -->
+
+    <resultMap id="UserInformation5" type="biao.community.information.port2_1and3_1.UserInformation5">
+        <result column="ua_id" property="u_id"/>
+        <result column="ua_name" property="u_nickname"/>
+        <result column="ua_head" property="u_head"/>
+        <result column="ua_sex" property="u_sex"/>
+        <result column="ua_xpoint" property="u_xpoint"/>
+    </resultMap>
+
+
+    <select id="getAnonUserInformation" parameterType="int" resultMap="UserInformation5">
+        SELECT ua_id,
+               ua_name,
+               ua_head,
+               ua_sex,
+               ua_xpoint
+        FROM user_anon
+        where u_id = #{u_id};
+    </select>
+
+    <select id="getCommunityDynamic" parameterType="biao.community.information.port2_1and3_1.JsonValue" resultMap="CommunityPostInformation">
+        SELECT bt_id,
+        u_id,
+        bt_like,
+        bt_reply,
+        bs_id,
+        bt_contents,
+        bt_time,
+        bt_image,
+        b_anonymous,
+        recommendValue
+        FROM b_topic
+        WHERE  bs_id like #{bs_id}
+        and b_shield != true
+        and  #{recommendValue} >= recommendValue
+        and if(#{recommendValue} = recommendValue and  bt_time >= #{time},false,true)
+        and (SELECT u_city FROM user WHERE user.u_id =  b_topic.u_id) like #{u_city}
+        ORDER BY recommendValue  DESC, bt_time DESC,bt_like DESC
+        LIMIT #{sum};
+    </select>
+
+    <select id="getUserBriefInformation" parameterType="int"
+            resultType="biao.community.information.port2_1and3_1.UserInformation5">
+        SELECT u_id,
+        u_nickname,
+        u_head,
+        u_sex,
+        u_city,
+        u_xpoint
+        FROM user
+        where u_id = #{u_id};
+    </select>
+
+
+    <select id="judgeLike" parameterType="int"
+            resultType="boolean">
+        SELECT IF(
+        (SELECT u_id FROM b_like WHERE  u_id = #{u_id} and bt_id = #{bt_id} LIMIT 1),
+        true,false
+        )
+        AS boolResult;
+    </select>
+
+    <select id="judgeBooked" parameterType="int"
+            resultType="boolean">
+        SELECT IF(
+        (SELECT u_id FROM u_friend WHERE u_id =#{u_id} and uf_id =#{uf_id} LIMIT 1),
+        true,false
+        )
+        AS boolResult;
+    </select>
+
+
+    <select id="getBsIdName" parameterType="int"  resultType="String">
+        SELECT name FROM b_classify WHERE bs_id =#{bs_id}
+    </select>
+
+    <resultMap id="AttCDInformation" type="biao.community.information.port2_14and3_14.AttCDInformation">
+        <result column="u_id" property="user"/>
+    </resultMap>
+
+    <select id="getAttCommunityDynamic" parameterType="biao.community.information.port2_14and3_14.JsonValue" resultMap="AttCDInformation">
+        SELECT bt_id,
+               bs_id,
+               bt_image,
+               bt_reply,
+               bt_contents,
+               bt_time,
+               bt_like,
+               u_id
+        FROM b_topic
+        WHERE u_id in ( SELECT uf_id  FROM u_friend WHERE u_id = #{u_id})
+        AND #{time} > bt_time
+        AND b_anonymous = false
+        ORDER BY bt_time DESC
+        LIMIT #{sum}
+    </select>
+<!--
+    <select id="getGoodDetailC" parameterType="biao.community.information.port2_1and3_1.JsonValue"  resultType="biao.community.information.port2_1and3_1.GoodPost">
+        SELECT
+        g_id,
+        g_price,
+        u_id,
+        g_anonymous,
+        g_information,
+        g_transport,
+        g_image,
+        recommendValue,
+        g_view,
+        g_time,
+        g_class,
+        g_like
+        from g_sell
+        WHERE g_class = #{g_class} and 	g_shield != true
+        and #{recommendValue} >= recommendValue
+        and if(#{recommendValue} = recommendValue and  g_time >= #{time},false,true)
+        ORDER BY recommendValue  DESC, g_time DESC
+        LIMIT #{sum};
+    </select>
+    -->
+
+    <select id="getGoodDetail" parameterType="biao.community.information.port2_1and3_1.JsonValue"  resultType="biao.community.information.port2_1and3_1.GoodPost">
+        SELECT
+            g_id,
+            g_price,
+            u_id,
+            g_anonymous,
+            g_information,
+            g_transport,
+            g_image,
+            recommendValue,
+            g_view,
+            g_time,
+            g_class,
+            g_like
+        from g_sell
+        WHERE g_shield != true
+        and g_class like #{g_class}
+        and #{recommendValue} >= recommendValue
+        and if(#{recommendValue} = recommendValue and  g_time >= #{time},false,true)
+        and (SELECT u_city FROM user WHERE user.u_id =  g_sell.u_id) like #{u_city}
+        ORDER BY recommendValue  DESC, g_time DESC
+        LIMIT #{sum};
+    </select>
+
+    <select id="getGclassName" resultType="String">
+        select name from g_classify where g_class = #{g_class}
+    </select>
+
+    <select id="isGlike" parameterType="String" resultType="boolean">
+        SELECT IF(
+            (SELECT u_id FROM g_like WHERE u_id = #{u_id} and g_id = #{g_id} LIMIT 1),
+            true,
+            false
+        )
+        AS boolResult;
+    </select>
+
+    <select id="isBCollect" parameterType="String" resultType="boolean">
+        SELECT IF(
+            (SELECT u_id FROM b_collect WHERE u_id = #{u_id}  and bt_id =#{bt_id} LIMIT 1),
+            false,
+            true
+        )
+        AS boolResult;
+    </select>
+
+    <select id="isGCollect" parameterType="String" resultType="boolean">
+        SELECT IF(
+            (SELECT u_id FROM g_collect WHERE u_id = #{u_id} and g_id = #{g_id} LIMIT 1),
+            false,
+            true
+        )
+        AS boolResult;
+    </select>
+
+    <resultMap id="AttGInformation" type="biao.community.information.port2_14and3_14.AttGInformation">
+        <result column="u_id" property="user"/>
+    </resultMap>
+
+    <select id="getAttGPost" parameterType="biao.community.information.port2_14and3_14.JsonValue" resultMap="AttGInformation">
+        SELECT g_id,
+               g_price,
+               u_id,
+               g_anonymous,
+               g_information,
+               g_transport,
+               g_image,
+               recommendValue,
+               g_view,
+               g_time,
+               g_class,
+               g_like
+        FROM g_sell
+        WHERE u_id in ( SELECT uf_id  FROM u_friend WHERE u_id = #{u_id})
+        AND #{time} > g_time
+        AND g_anonymous = false
+        ORDER BY g_time DESC
+        LIMIT #{sum}
+    </select>
+
+</mapper>

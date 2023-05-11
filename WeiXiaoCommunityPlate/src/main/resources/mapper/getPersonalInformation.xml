@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="biao.community.dao.DGetPersonalInformation">
+    <select id="getInformation" parameterType="int" resultType="biao.community.information.port1_1.UserInformation">
+        <!--
+        select * from user.user where u_id = #{id}
+        -->
+        select
+        u_id,
+        u_num,
+        u_name,
+        u_tel,
+        u_identity,
+        u_nickname,
+        u_head,
+        u_sex,
+        u_city,
+        u_like,
+        u_address,
+        u_point,
+        u_xpoint,
+        u_birth,
+        u_regdate,
+        u_email
+        from user.user where u_id = #{id}
+    </select>
+
+    <select id="getUserCreditScore" parameterType="String" resultType="int">
+        select u_xpoint from user where u_id = #{u_id}
+    </select>
+
+    <select id="isBook" parameterType="biao.community.information.port1_1.JsonValue" resultType="boolean">
+        SELECT IF(
+            (SELECT u_id FROM u_friend WHERE u_id = #{u_id} and uf_id = #{aU_id} LIMIT 1),
+            true,
+            false
+        )
+        AS boolResult;
+    </select>
+
+    <select id="getUserHead" parameterType="String" resultType="String">
+        SELECT u_head from user where u_id = #{u_id}
+    </select>
+
+    <update id="updateUHead" parameterType="String">
+        update user set u_head = #{u_head} where u_id = #{u_id}
+    </update>
+
+
+    <update id="updateUNickname" parameterType="String">
+    update user set u_nickname = #{u_nickname} where u_id = #{u_id}
+    </update>
+
+    <update id="updateUTel" parameterType="String">
+        update user set u_tel = #{u_tel} where u_id = #{u_id}
+    </update>
+
+    <update id="updateUSex" parameterType="String">
+        update user set u_sex = #{u_sex} where u_id = #{u_id}
+    </update>
+
+    <update id="updateULike" parameterType="String">
+        update user set u_like = #{u_like} where u_id = #{u_id}
+    </update>
+
+    <update id="updateUAddress" parameterType="String">
+        update user set u_address = #{u_address} where u_id = #{u_id}
+    </update>
+
+    <update id="updateUBirth" parameterType="String">
+        update user set u_birth = #{u_birth} where u_id = #{u_id}
+    </update>
+    
+    <select id="getUserIfmt" parameterType="String" resultType="biao.community.information.port1_4.UserIfmt">
+        select u_id,u_birth,u_address,u_like,u_sex,u_tel,u_nickname,u_head
+        from user
+        where u_id = #{u_id}
+    </select>
+
+</mapper>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="biao.community.dao.DGetCampusInformation">
+    <select id="getInformation" parameterType="int" resultType="biao.community.information.port5_4.CampusInformation">
+        <!--
+        select * from user.campus where u_id = #{id}
+        -->
+        select
+        c_id,
+        c_city
+        from user.campus
+    </select>
+</mapper>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="biao.community.dao.DGetUserPost">
+
+
+    <resultMap id="CommunityPostInformation" type="biao.community.information.port2_1and3_1.CommunityPostInformation">
+        <id column="bt_id" property="bt_id"/>
+        <result column="bt_time" property="bt_time_Temp"/>
+    </resultMap>
+
+    <select id="getUserBPost"  resultMap="CommunityPostInformation" parameterType="biao.community.information.port2_13and3_12.JsonValue">
+        SELECT bt_id,
+               bt_time,
+               u_id,
+               bt_like,
+               bt_reply,
+               bs_id,
+               bt_contents,
+               bt_image,
+               b_anonymous
+        FROM b_topic
+        WHERE u_id = #{u_id}
+        AND #{time} > bt_time
+        ORDER BY b_topic.bt_time desc
+        LIMIT #{sum};
+    </select>
+
+    <select id="getUserGPost" parameterType="biao.community.information.port2_13and3_12.JsonValue" resultType="biao.community.information.port2_13and3_12.DealInformation">
+        SELECT g_id,
+               g_price,
+               g_shield,
+               g_anonymous,
+               g_information,
+               g_transport,
+               g_image,
+               u_id,
+               g_time
+        FROM g_sell
+        WHERE u_id = #{u_id}
+        AND #{time} > g_time
+        ORDER BY g_time desc
+        LIMIT #{sum};
+    </select>
+
+    <select id="isBCollect" parameterType="String" resultType="boolean">
+        SELECT IF(
+                       (SELECT u_id FROM b_collect WHERE u_id = #{u_id}  and bt_id =#{bt_id} LIMIT 1),
+            false,
+            true
+        )
+                   AS boolResult;
+    </select>
+
+    <select id="isGCollect" parameterType="String" resultType="boolean">
+        SELECT IF(
+                           (SELECT u_id FROM g_collect WHERE u_id = #{u_id} and g_id = #{g_id} LIMIT 1),
+            false,
+            true
+        )
+                   AS boolResult;
+    </select>
+
+
+
+
+</mapper>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="biao.community.dao.DIsLike">
+    <select id="exBCRecord" parameterType="biao.community.information.port7_1_4.JsonValue" resultType="boolean">
+        SELECT IF(
+            (SELECT u_id FROM b_like WHERE u_id = #{u_id} and bt_id = #{bt_id} LIMIT 1),
+            false,
+            true
+        )
+        AS boolResult;
+    </select>
+
+    <insert id="addBIsLike" parameterType="biao.community.information.port7_1_4.JsonValue" >
+        INSERT INTO b_like (u_id,bt_id) VALUES(#{u_id},#{bt_id})
+    </insert>
+
+    <update id="addBCount" parameterType="biao.community.information.port7_1_4.JsonValue">
+        UPDATE b_topic SET bt_like = bt_like+1 WHERE bt_id = #{bt_id}
+    </update>
+
+    <update id="reduceBCount" parameterType="biao.community.information.port7_1_4.JsonValue">
+        UPDATE b_topic SET bt_like = bt_like-1 WHERE bt_id = #{bt_id}
+    </update>
+
+    <delete id="delBIsLike" parameterType="biao.community.information.port7_1_4.JsonValue">
+        DELETE FROM b_like WHERE u_id = #{u_id} and bt_id = #{bt_id}
+    </delete>
+
+
+
+    <select id="exGCRecord" parameterType="biao.community.information.port7_1_4.JsonValue" resultType="boolean">
+        SELECT IF(
+            (SELECT u_id FROM g_like WHERE u_id = #{u_id}  and g_id = #{g_id} LIMIT 1),
+            false,
+            true
+        )
+        AS boolResult;
+    </select>
+
+    <insert id="addGIsLike" parameterType="biao.community.information.port7_1_4.JsonValue">
+        INSERT INTO g_like (u_id,g_id) VALUES(#{u_id},#{g_id})
+    </insert>
+
+    <update id="addGCount" parameterType="biao.community.information.port7_1_4.JsonValue">
+        UPDATE g_sell SET g_like = g_like+1 WHERE g_id = #{g_id}
+    </update>
+
+    <update id="reduceGCount" parameterType="biao.community.information.port7_1_4.JsonValue">
+        UPDATE g_sell SET g_like = g_like-1 WHERE g_id = #{g_id}
+    </update>
+
+    <delete id="delGIsLike" parameterType="biao.community.information.port7_1_4.JsonValue">
+        DELETE FROM g_like WHERE u_id = #{u_id} and g_id = #{g_id}
+    </delete>
+
+
+
+</mapper>

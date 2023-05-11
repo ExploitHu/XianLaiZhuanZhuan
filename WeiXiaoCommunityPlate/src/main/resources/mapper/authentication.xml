@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="biao.community.dao.DAuthentication">
+
+    <select id="updAttcIfmt" parameterType="biao.community.information.port5_6__9.AttcIfmt">
+        INSERT INTO authenticationinformation
+            (u_id,name,studentId,collegeToClass,images)
+        VALUES
+            (#{u_id},#{name},#{studentId},#{otherInformation},#{images})
+    </select>
+
+    <select id="deleteOld" parameterType="int">
+        delete from authenticationinformation
+        WHERE u_id = #{u_id}
+    </select>
+
+    <select id="getCertificationStatus" parameterType="String" resultType="biao.community.information.port5_6__9.CertificationStatus">
+        SELECT auditStatus,statements FROM authenticationinformation WHERE u_id = #{u_id}
+    </select>
+
+
+    <select id="getAttcIfmt" parameterType="int" resultType="biao.community.information.port5_6__9.AttcIfmt">
+        SELECT
+         u_id,
+         name,
+         studentId,
+         collegeToClass,
+         images,
+         auditStatus,
+         statements,
+         num
+        FROM authenticationinformation
+        WHERE num > #{num}  and auditStatus = 1
+        ORDER BY num
+        LIMIT 1;
+    </select>
+
+    <update id="auditAttcIfmt" parameterType="String" >
+        UPDATE authenticationinformation SET statements = #{statements} , auditStatus= #{auditStatus} WHERE u_id = #{u_id}
+    </update>
+
+    <update id="updateUIdentity" parameterType="String" >
+        UPDATE user SET u_identity = #{u_identity}, studentId = {studentId} WHERE u_id = #{u_id}
+    </update>
+</mapper>

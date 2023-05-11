@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="biao.community.dao.DSearchKeywords">
+
+    <resultMap id="CommunityPostInformation" type="biao.community.information.port2_1and3_1.CommunityPostInformation">
+        <id column="bt_id" property="bt_id"/>
+        <result column="bt_time" property="bt_time_Temp"/>
+    </resultMap>
+
+    <select id="searchKeywordsGetSize"  parameterType="biao.community.information.port2_7.JsonValue" resultMap="CommunityPostInformation">
+        select
+            bt_id,
+            bt_time,
+            u_id,
+            bt_like,
+            bt_reply,
+            bs_id,
+            bt_contents,
+            bt_image,
+            b_anonymous,
+            recommendValue
+        from b_topic
+
+        WHERE b_shield != true
+        <if test="key != null">
+            <choose>
+                <when test="key.length() == 1">
+                    and bt_contents like "%${key}%"
+                </when>
+                <when test="key.length() > 1">
+                    and MATCH (bs_id,bt_contents) AGAINST (#{key})
+                </when>
+            </choose>
+        </if>
+        <if test="u_city!=null">
+            and (SELECT u_city FROM user WHERE user.u_id = b_topic.u_id) = #{u_city}
+        </if>
+        <if test="bs_id != null">
+            and bs_id = #{bs_id}
+        </if>
+        and #{recommendValue} >= recommendValue
+        and if(#{recommendValue} = recommendValue and  bt_time >= #{time},false,true)
+
+        ORDER BY recommendValue  DESC, bt_time DESC
+        LIMIT #{size}
+    </select>
+<!--
+    <select id="searchKeywordGetSize"  parameterType="biao.community.information.port2_7.JsonValue" resultMap="CommunityPostInformation">
+        select
+            bt_id,
+            bt_time,
+            u_id,
+            bt_like,
+            bt_reply,
+            bs_id,
+            bt_contents,
+            bt_image,
+            b_anonymous
+        from b_topic
+
+        where  b_shield != true
+        and bt_contents like #{key}
+
+        ORDER BY recommendValue  DESC, bt_time DESC
+        LIMIT #{size}
+    </select>
+    -->
+
+</mapper>

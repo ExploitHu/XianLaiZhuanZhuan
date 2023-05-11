@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="biao.community.dao.DRegister">
+    <select id="establishUserMessage">
+        INSERT INTO user (
+        u_id,
+        u_email,
+        u_pass,
+        u_city,
+        u_birth,
+        u_sex,
+        u_nickname,
+        u_tel,
+        u_name,
+        u_num,
+        u_regdate,
+        u_head
+        ) values
+        (
+        #{u_id},
+        #{u_email},
+        #{u_pass},
+        #{u_city},
+        #{u_birth},
+        #{u_sex},
+        #{u_nickname},
+        #{u_tel},
+        #{u_name},
+        #{u_num},
+        #{u_regdate},
+        #{u_head}
+        );
+    </select>
+
+    <select id="minimumIntervalVacancyValue" resultType="int">
+        SELECT minimumIntervalVacancyValue(#{min},#{max});
+    </select>
+
+    <select id="getCampus" resultType="String">
+        SELECT c_city from campus where c_id=#{campusCode};
+    </select>
+
+    <select id="examineCity" parameterType="int"
+            resultType="boolean">
+        SELECT IF(
+            (SELECT c_id FROM campus WHERE c_id = #{u_city} LIMIT 1),
+            false,
+            true
+        )
+        AS boolResult;
+    </select>
+
+
+
+    <select id="checkEmail" parameterType="String" resultType="boolean">
+        SELECT IF(
+            ( SELECT u_id FROM user WHERE u_email = #{u_email} LIMIT 1),
+            true,false
+        )
+                   AS boolResult;
+    </select>
+
+    <select id="establishAnonUserMessage" >
+        INSERT INTO user_anon (
+            u_id,
+            ua_sex
+        ) values
+        (
+            #{u_id},
+            #{ua_sex}
+        );
+    </select>
+
+    <update id="updatePass" parameterType="biao.community.information.port5_1.UpdatePass" >
+        update user  set u_pass = #{u_pass}  where u_id =#{u_id}
+    </update>
+
+</mapper>

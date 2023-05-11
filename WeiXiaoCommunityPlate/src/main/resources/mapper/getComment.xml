@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="biao.community.dao.DGetComment">
+
+    <select id="getBMainComment" parameterType="int" resultType="biao.community.information.port2_3.BMainComment">
+        SELECT
+        bt_comment.btc_id,bt_comment.u_id0,bt_comment.btc_com,bt_comment.btc_time,
+        user.u_nickname,user.u_head
+        FROM bt_comment,user
+        WHERE
+        bt_comment.bt_id = #{bt_id}
+        and bt_comment.u_id is null
+        and user.u_id = bt_comment.u_id0
+    </select>
+
+    <select id="getBSonComment" parameterType="String" resultType="biao.community.information.port2_3.BSonComment">
+        SELECT
+        bt_comment.u_id0,bt_comment.u_id,bt_comment.btc_com,bt_comment.btc_time,
+        user.u_nickname,user.u_head
+        FROM bt_comment,user
+        WHERE
+        bt_comment.btc_id = #{btc_id}
+        and bt_comment.bt_id = #{bt_id}
+        and bt_comment.u_id is not null
+        and user.u_id = bt_comment.u_id0
+    </select>
+
+    <select id="getGMainComment" parameterType="int" resultType="biao.community.information.port2_3.GMainComment">
+        SELECT
+        g_comment.gc_id,g_comment.u_id0,g_comment.gc_com,g_comment.gc_time,
+        user.u_nickname,user.u_head
+        FROM g_comment,user
+        WHERE
+        g_comment.g_id = #{g_id}
+        and g_comment.u_id is null
+        and user.u_id = g_comment.u_id0
+    </select>
+
+    <select id="getGSonComment" parameterType="String" resultType="biao.community.information.port2_3.GSonComment">
+        SELECT
+        g_comment.u_id0,g_comment.u_id,g_comment.gc_com,g_comment.gc_time,
+        user.u_nickname,user.u_head
+        FROM g_comment,user
+        WHERE
+        g_comment.gc_id = #{gc_id}
+        and g_comment.g_id = #{g_id}
+        and g_comment.u_id is not null
+        and user.u_id = g_comment.u_id0
+    </select>
+
+    <select id="getBToBeRead" parameterType="String" resultType="biao.community.information.port2_17and3_16.BTobeComment">
+        SELECT
+        b_topic.bt_id,bt_comment.u_id0,bt_comment.u_id,bt_comment.btc_com,user.u_nickname,user.u_head,b_topic.bt_image,b_topic.bt_contents,bt_comment.btc_id,bt_comment.btc_time,bt_comment.id
+        FROM  bt_comment
+        inner join user on user.u_id = bt_comment.u_id0
+        inner join b_topic on  b_topic.bt_id = bt_comment.bt_id
+        WHERE
+        bt_comment.u_id = #{u_id}
+        and bt_comment.id > #{id}
+        and bt_comment.u_id0 != bt_comment.u_id
+        or (bt_comment.u_id IS NULL and bt_comment.read = 0 and  (SELECT u_id FROM b_topic WHERE b_topic.bt_id = bt_comment.bt_id ) = #{u_id} and bt_comment.u_id0  !=#{u_id} )
+        ORDER BY bt_comment.btc_time  desc
+        <if test="id == '0'">
+            limit #{l}
+        </if>
+    </select>
+
+    <select id="getGToBeRead" parameterType="String" resultType="biao.community.information.port2_17and3_16.GTobeComment">
+        SELECT
+        g_comment.g_id,g_comment.u_id0,g_comment.u_id,g_comment.gc_com,user.u_nickname,user.u_head,g_sell.g_image,g_sell.g_information,g_comment.gc_id,g_comment.gc_time,g_comment.id
+        FROM g_comment
+        inner join user on user.u_id = g_comment.u_id0
+        inner join g_sell on g_sell.g_id = g_comment.g_id
+        WHERE
+        g_comment.u_id = #{u_id}
+        and g_comment.id > #{id}
+        and g_comment.u_id0 != g_comment.u_id
+        or (g_comment.u_id IS NULL and g_comment.read = 0 and (SELECT u_id FROM g_sell WHERE g_sell.g_id = g_comment.g_id )= #{u_id} and g_comment.u_id0  !=#{u_id} )
+        ORDER BY g_comment.gc_time  desc
+        <if test="id == '0'">
+        limit #{l}
+        </if>
+    </select>
+
+    <select id="getBTobeCommentNumber" parameterType="Integer" resultType="Integer">
+        select bToBeRead from user where u_id = #{u_id}
+    </select>
+
+    <select id="getGTobeCommentNumber" parameterType="Integer" resultType="Integer">
+        select gToBeRead from user where u_id = #{u_id}
+    </select>
+
+    <update id="resetBTobeComment" parameterType="String">
+        update user set bToBeRead = 0 where u_id = #{u_id}
+    </update>
+
+    <update id="resetGTobeComment" parameterType="String">
+        update user set gToBeRead = 0 where u_id = #{u_id}
+    </update>
+</mapper>

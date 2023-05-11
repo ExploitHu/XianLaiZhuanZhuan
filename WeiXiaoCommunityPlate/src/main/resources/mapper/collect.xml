@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="biao.community.dao.DCollect">
+
+    <select id="bAddCollect" parameterType="biao.community.information.port2_12and3_11.JsonValue">
+        INSERT INTO b_collect (u_id,bt_id) VALUES(#{u_id},#{bg_id})
+    </select>
+
+    <select id="gAddCollect" parameterType="biao.community.information.port2_12and3_11.JsonValue">
+        INSERT INTO g_collect (u_id,g_id) VALUES(#{u_id},#{bg_id})
+    </select>
+
+    <delete id="bDelCollect" parameterType="biao.community.information.port2_12and3_11.JsonValue">
+        delete from b_collect where u_id = #{u_id} and bt_id = #{bg_id}
+    </delete>
+
+    <delete id="gDelCollect" parameterType="biao.community.information.port2_12and3_11.JsonValue">
+        delete from g_collect where u_id = #{u_id} and g_id = #{bg_id}
+    </delete>
+</mapper>
