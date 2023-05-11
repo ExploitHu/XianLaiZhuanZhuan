@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="biao.im.dao.DStrandedMessage">
+
+    <!-- 获取滞留消息 -->
+    <select id="getStrandedMessage" parameterType="int" resultType="biao.im.message.StrandedMessage">
+        select u_id1,dia_message,dia_time,md5 from u_nmessage where u_id2 = #{u_id}
+    </select>
+
+    <!-- 写入滞留消息 -->
+    <select id="setStrandedMessage" parameterType="biao.im.message.StrandedMessage" >
+        INSERT INTO u_nmessage (u_id1,u_id2,dia_message,md5) VALUES(#{u_id1},#{u_id2},#{dia_message},#{md5})
+    </select>
+
+    <!-- 删除滞留消息 -->
+    <select id="deleteStrandedMessage">
+        DELETE FROM u_nmessage WHERE md5 = #{md5}
+    </select>
+
+    <select id="getBuId" parameterType="String" resultType="String">
+        select u_id from b_topic where bt_id = #{bt_id}
+    </select>
+
+    <select id="getGuId" parameterType="String" resultType="String">
+        select u_id from g_sell where g_id = #{g_id}
+    </select>
+
+    <select id="exUId" parameterType="String" resultType="boolean">
+        SELECT IF(
+            (SELECT u_id FROM user WHERE u_id = #{u_id} LIMIT 1),
+            false,
+            true
+        )
+        AS boolResult;
+    </select>
+
+    <select id="getBTobeRead" parameterType="String" resultType="int">
+        select  bToBeRead from user where u_id = #{u_id}
+    </select>
+
+    <select id="getGTobeRead" parameterType="String" resultType="int">
+        select  gToBeRead from user where u_id = #{u_id}
+    </select>
+
+</mapper>
